@@ -30,17 +30,12 @@ def create_content_file(data_file):
 def create_file(path, data):
         with open(path, "w") as file:
                 file.write(data)
-        
-# Add data to existing files
-def add_to_file(path, data):
-        with open(path, "a") as file:
-                file.write(data + "\n")
 
 # Write data from list to md file
 def write_to_mdfile(path, contents):
         with open(path, "w") as file:
                 for entry in contents:
-                        file.write(entry + "\n")
+                        file.write(entry + '\n')
 
 # Delete the contents of a file
 def delete_file_content(path):
@@ -58,8 +53,9 @@ def file_to_set(file_name):
 # Iterate through a set, each item will be a new line in the file
 def set_to_file(entries, file):
         delete_file_content(file)
-        for entry in entries:
-                add_to_file(file, entry)
+        with open(file,'w') as file:
+                for entry in entries:
+                        file.write(entry + '\n')
 
 # Formats input list entries to md format and writes to to file
 def list_to_file(contents, file):

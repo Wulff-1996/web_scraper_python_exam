@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 from web_parser import WebParser
 from file_handler import create_project_directory, create_overview_files, create_content_file, set_to_file, list_to_file, file_to_set
+from domain_formatter import get_path_name
 import sys
 import os
 import ssl
@@ -13,36 +14,31 @@ class Scraper:
         self.domain_name = domain_name                                                              # All URLs must contains this name to be searched            
         self.queue_file = project_name + "/queue.txt"                                               # File containing urls to scrape        
         self.scraped_file = project_name + "/scraped.txt"                                           # File containing scraped urls    
-        self.data_file = project_name + "/content.md"                                               # File containing the md formatted contents of a website    
         self.data_list = []                                                                         # List for storing website data    
         self.queue = set()                                                                          # Set for processing queued urls
         self.scraped = set()                                                                        # Set to avaoid processing same urls   
         self.start_up()                                                                             # Setup scraper and project dirs/files
-        self.scrape_page(self.base_url, self.data_file)                                             # Scrape initial page (base_url)        
+        self.scrape_page(self.base_url, project_name + "/" + get_path_name(base_url) + ".md" )      # Scrape initial page (base_url)        
 
     def start_up(self):
         create_project_directory(self.project_name)
         create_overview_files(self.project_name, self.base_url)
         self.queue = file_to_set(self.queue_file)                                                   # Convert file to set for faster processing
-        self.scraped = file_to_set(self.scraped_file)                                               
+        self.scraped = file_to_set(self.scraped_file)                                            
         print("-- Scraper initialised --")
 
-    def scrape_page(self, page_url, data_file):
+    def scrape_page(self, page_url, path):
         if page_url not in self.scraped:
-            create_content_file(data_file)                                                          # Created here since each name must be unique
+            create_content_file(path)                                                               # Created here since each name must be unique
             self.add_links_to_queue(self.collect_links_and_data(page_url))                          # Add new links to queue
             self.queue.remove(page_url)                                                             # Remove current url from queue
             print("Scraping: " + page_url)
             print("Queue: " + str(len(self.queue)) + " | Scraped: " + str(len(self.scraped)))
             self.scraped.add(page_url)                                                              # Add scraped page to set
-            self.update_files(data_file)                                                            # Update all project files
+            self.update_files(path)                                                                 # Update all project files
 
     # Collects all urls and data from specified website
     def collect_links_and_data(self, page_url):
-        
-        # Fixes ssl issue for some mac users
-        if (not os.environ.get('PYTHONHTTPSVERIFY', '') and getattr(ssl, '_create_unverified_context', None)): 
-            ssl._create_default_https_context = ssl._create_unverified_context
         try:
             html_string = ""
             response = urlopen(page_url)
@@ -60,18 +56,18 @@ class Scraper:
         return parser.get_page_urls()
     
      # Add urls to queue depending on conditions
-    def add_links_to_queue(self, links):                                                           
+    def add_links_to_queue(self, links) -> None:                                                           
         for url in links:
             if url in self.queue:
                 continue
             if url in self.scraped:
                 continue
-            if self.domain_name not in url:
+            if self.domain_name not in url:                                                         # Only add urls that are in the domain
                 continue
             self.queue.add(url)
 
     # Called every time a website has been scraped
-    def update_files(self, data_file):
+    def update_files(self, path):
         set_to_file(self.queue, self.queue_file)
         set_to_file(self.scraped, self.scraped_file)
-        list_to_file(self.data_list, data_file)
+        list_to_file(self.data_list, path)

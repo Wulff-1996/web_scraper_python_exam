@@ -1,5 +1,5 @@
 from scraper import Scraper
-from domain_formatter import get_domain_name, get_sub_domain_name
+from domain_formatter import get_domain_name, get_sub_domain_name, get_path_name
 from file_handler import file_to_set
 
 PROJECT_NAME = "elective_dummy"
@@ -12,21 +12,19 @@ content_file = PROJECT_NAME + "/content"
 scraper = Scraper(PROJECT_NAME, HOMEPAGE, DOMAIN_NAME)
 
 # Use scraper to scrape every url in queue file
-# content_num is appended to content file 
-def run(content_num):
+def run():
         queue_urls = file_to_set(QUEUE_FILE)
 
         for url in queue_urls:
-                scraper.scrape_page(url, content_file + str(content_num) + ".md")
-                content_num += 1
-        check_queue(content_num)
+                scraper.scrape_page(url, PROJECT_NAME + "/" + get_path_name(url) + ".md")
+        check_queue()
 
 # This will ensure the queuefile is empty after running, 
 # in case new links were added during run
-def check_queue(content_num):
+def check_queue():
         if len(file_to_set(QUEUE_FILE)) > 0:
-                run(content_num)
+                run()
         else:
                 print("-- All pages from '" + get_sub_domain_name(HOMEPAGE) + "' was scraped --")
 
-run(1)
+run()

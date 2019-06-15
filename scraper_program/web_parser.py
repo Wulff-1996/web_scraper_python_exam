@@ -12,13 +12,16 @@ class WebParser(HTMLParser):
         self.tags = []                                                  # List for tag storage
 
     def error(self, message):
-        pass
+        return super().error(message)
 
     # This handles all starttags of the html page
     def handle_starttag(self, tag, attrs):
         if tag == "a":                                                  # If tag is a link
             for (attribute, value) in attrs:                
-                if (attribute == "href" and value != "#menu" and attribute == "href" and value != "next.html"):
+                if (attribute == "href" 
+                and value != "#menu" 
+                and value != "next.html"
+                and value != "black_jack_pics.html"):
                         url = parse.urljoin(self.base_url, value)       # Join href value with base url                                              
                         self.urls.add(url)                              # Add the complete url to set 
         
@@ -39,13 +42,13 @@ class WebParser(HTMLParser):
     # This handles all data between tags in the html page
     def handle_data(self, data):
         if self.is_inside_article:                                      # If between article tags
-            self.data.append(" ".join(data.split()))                    # Append data but split whitespace
+            self.data.append(" ".join(data.split()))                    # Append data but split whitespace                 
 
-    def get_page_urls(self):
+    def get_page_urls(self) -> Set():
         return self.urls
     
     # Combines tag & data into a single list, where tags matches the data entries
-    def get_data_with_tags(self):
+    def get_data_with_tags(self) -> []:
         data_with_tags = []
         self.data = list(filter(lambda name: name.strip(), self.data))  # Strip all indexes with only whitespaces
         i = 0

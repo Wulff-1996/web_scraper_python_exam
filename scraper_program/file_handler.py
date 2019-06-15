@@ -57,6 +57,14 @@ def set_to_file(entries, file):
                 for entry in entries:
                         file.write(entry + '\n')
 
+def is_file_empty(filepath: str):
+        # returns true if the file is empty and false if the file does not exists or is the file has no content
+        is_empty = True
+        if os.path.isfile(filepath):
+                if os.path.getsize(filepath) > 0:
+                        is_empty = False
+        return is_empty
+
 # Formats input list entries to md format and writes to to file
 def list_to_file(contents, file):
         formatted = add_md_formatting(contents)
@@ -65,14 +73,13 @@ def list_to_file(contents, file):
 # Converts the input list to an md formatted list
 def add_md_formatting(contents):
         formatted_list = []
-
         for line in contents:
                 if line.startswith("h1"):
-                        placeholder = "\n" + line.replace("h1", "# ") + "\n"
-                        formatted_list.append(placeholder)
+                        placeholder = line.replace("h1", "# ") + "\n"
+                        formatted_list.append(placeholder.replace(".", ""))
                 elif line.startswith("h2"):
-                        placeholder = "\n" + line.replace("h2", "## ")
-                        formatted_list.append(placeholder)
+                        placeholder = "\n" + line.replace("h2", "## ") + "\n"
+                        formatted_list.append(placeholder.replace(".", ""))
                 elif line.startswith("p"):
                         if not line.startswith("pNOTE") and not line.startswith("pAssignment") and not line.startswith("pre") and not line.startswith("p#"):
                                 placeholder = line.replace("p", "", 1) + "  "
@@ -82,5 +89,5 @@ def add_md_formatting(contents):
                         formatted_list.append(placeholder)
                 elif line.startswith("a"):
                         placeholder = line.replace("a", "", 1)
-                        formatted_list.append(placeholder)  
+                        formatted_list.append(placeholder)
         return formatted_list

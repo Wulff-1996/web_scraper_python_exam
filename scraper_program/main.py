@@ -1,6 +1,6 @@
 from scraper import Scraper
 from domain_formatter import get_domain_name, get_sub_domain_name, get_path_name
-from file_handler import file_to_set
+from file_handler import file_to_set, is_file_empty
 
 PROJECT_NAME = "elective_dummy"
 HOMEPAGE = "https://clbokea.github.io/exam/index.html"
@@ -22,9 +22,14 @@ def run():
 # This will ensure the queuefile is empty after running, 
 # in case new links were added during run
 def check_queue():
-        if len(file_to_set(QUEUE_FILE)) > 0:
+        if not is_file_empty(QUEUE_FILE):
                 run()
         else:
                 print("-- All pages from '" + get_sub_domain_name(HOMEPAGE) + "' was scraped --")
 
-run()
+def main():
+        run()
+
+if __name__ == "__main__":
+    main()
+

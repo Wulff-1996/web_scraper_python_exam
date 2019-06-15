@@ -10,7 +10,10 @@ def get_domain_name(url):
 
 
 # Get sub domain name (clbokea.github.io)
-def get_sub_domain_name(url):
+def get_sub_domain_name(url: str) -> str:
+    """
+    returns a string with the path of the url, example http://example.com/index.html -> index
+    """
     try:
         return urlparse(url).netloc
     except:

@@ -44,7 +44,7 @@ class WebParser(HTMLParser):
         if self.is_inside_article:                                      # If between article tags
             self.data.append(" ".join(data.split()))                    # Append data but split whitespace                 
 
-    def get_page_urls(self) -> Set():
+    def get_page_urls(self) -> set():
         return self.urls
     
     # Combines tag & data into a single list, where tags matches the data entries

@@ -17,11 +17,7 @@ def run():
 
         for url in queue_urls:
                 scraper.scrape_page(url, PROJECT_NAME + "/" + get_path_name(url) + ".md")
-        check_queue()
-
-# This will ensure the queuefile is empty after running, 
-# in case new links were added during run
-def check_queue():
+        
         if not is_file_empty(QUEUE_FILE):
                 run()
         else:

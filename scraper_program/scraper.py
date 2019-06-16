@@ -4,7 +4,6 @@ from file_handler import create_project_directory, create_overview_files, create
 from domain_formatter import get_path_name
 import sys
 import os
-import ssl
 
 class Scraper:
 
@@ -55,7 +54,7 @@ class Scraper:
             sys.exit()
         return parser.get_page_urls()
     
-     # Add urls to queue depending on conditions
+    # Add urls to queue depending on conditions
     def add_links_to_queue(self, links) -> None:                                                           
         for url in links:
             if url in self.queue:

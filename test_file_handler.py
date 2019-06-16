@@ -55,7 +55,7 @@ class Test_File_Handler(unittest.TestCase):
         header1Tag = 'h1im a header tag'
         header1TagResult = '# im a header tag\n'
         header2Tag = 'h2im a header2 tag'
-        header2Tag_result = '\n## im a header2 tag\n'
+        header2Tag_result = '\n## im a header2 tag\n        '
 
         # p tag test
         ptag = 'pim a p tag'
